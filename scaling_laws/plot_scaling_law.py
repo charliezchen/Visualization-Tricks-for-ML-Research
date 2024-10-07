@@ -1,6 +1,7 @@
 import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
+from matplotlib.lines import Line2D
 
 from scaling_laws.data_fns import get_scaling_law_data
 
@@ -36,5 +37,19 @@ plt.yscale("log")
 plt.ylabel("Loss")
 plt.xlabel("Compute (PFLOPs)")
 plt.legend()
+plt.tight_layout()
+plt.show()
+
+# Top of plot legend.
+cases = [val["params"] for param, val in plot_map.items() if val["label"] is not None]
+fig, ax = plt.subplots(dpi=100, figsize=(len(cases) * 2.5, 1))
+legend_lines = []
+for param, val in plot_map.items():
+    if val["label"] is not None:
+        color = val["color"]
+        ax.plot([], [], color=color)
+        legend_lines.append(Line2D([0], [0], color=color, lw=5))
+ax.legend(legend_lines, cases, loc="center", ncol=len(cases), fontsize=20)
+ax.set_axis_off()
 plt.tight_layout()
 plt.show()

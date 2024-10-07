@@ -7,11 +7,18 @@ def get_scaling_law_data():
     start_stop_map = {0.25: (1, 20), 0.5: (3, 30), 1.: (6, 20), 2.: (10, 50), 4.: (10, 80)}
     for case in cases:
         start, stop = start_stop_map[case]
-        plateau = exponential_decay(case, A=3., k=0.15, C=1.0)
-        x = np.linspace(start, stop, num=10)
-        y = exponential_decay(x, A=5, C=plateau * 0.5, k=0.25)
+        x = np.linspace(start, stop, num=5)
+        y = taylor(x, A=3, C=0, k=0.15, x0=x[2])
         data.append({"compute": x, "loss": y, "params": case})
     return data
+
+
+def taylor(x, A, C, k, x0):
+    f0 = exponential_decay(x0, A, C, k)
+    f1 = -k * A * np.exp(-k * x)
+    f2 = k ** 2 * A * np.exp(-k * x)
+    out = f0 + (x - x0) * f1 + 0.5 * (x - x0) ** 2. * f2
+    return out
 
 
 def exponential_decay(x, A, C, k):
